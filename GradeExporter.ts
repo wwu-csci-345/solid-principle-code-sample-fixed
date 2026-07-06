@@ -1,16 +1,24 @@
+/** Flat grade record for one student. */
 type StudentGrade = {
+  /** System identifier for the student. */
   studentId: string;
+  /** Human-readable student name. */
   studentName: string;
+  /** Numeric score used to derive the letter grade. */
   score: number;
+  /** Letter representation of performance. */
   letterGrade: string;
 };
 
+/** Common exporter contract for grade output formats. */
 interface GradeExporter {
+  /** Converts grade data to a specific serialized format. */
   export(grades: StudentGrade[]): string;
 }
 
 // implements csv exporter
 class CsvGradeExporter implements GradeExporter {
+  /** Renders grades as CSV with a header row. */
   export(grades: StudentGrade[]): string {
     const header = "studentId,studentName,score,letterGrade";
 
@@ -24,6 +32,7 @@ class CsvGradeExporter implements GradeExporter {
 
 // implements html exporter
 class HtmlGradeExporter implements GradeExporter {
+  /** Renders grades as a basic HTML table. */
   export(grades: StudentGrade[]): string {
     const rows = grades
       .map(grade => {
@@ -55,6 +64,7 @@ class HtmlGradeExporter implements GradeExporter {
 
 // implements json exporter
 class JsonGradeExporter implements GradeExporter {
+  /** Renders grades as pretty-printed JSON. */
   export(grades: StudentGrade[]): string {
     return JSON.stringify(grades, null, 2);
   }
@@ -76,6 +86,7 @@ const grades: StudentGrade[] = [
   },
 ];
 
+/** Sends exported grade content to a download destination (console in this demo). */
 function downloadGrades(
   grades: StudentGrade[],
   exporter: GradeExporter

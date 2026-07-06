@@ -1,4 +1,6 @@
+/** Capability for sending email notifications. */
 interface EmailSender {
+  /** Sends an email with subject and body to a recipient. */
   sendEmail(
     emailAddress: string,
     subject: string,
@@ -6,14 +8,18 @@ interface EmailSender {
   ): Promise<void>;
 }
 
+/** Capability for sending SMS text messages. */
 interface SmsSender {
+  /** Sends a text message to a phone number. */
   sendSms(
     phoneNumber: string,
     text: string
   ): Promise<void>;
 }
 
+/** Capability for sending push notifications to devices. */
 interface PushSender {
+  /** Sends a push notification payload to a device token. */
   sendPushNotification(
     deviceToken: string,
     title: string,
@@ -21,7 +27,9 @@ interface PushSender {
   ): Promise<void>;
 }
 
+/** Capability for storing in-app inbox messages. */
 interface InboxWriter {
+  /** Saves a message for later viewing in the app inbox. */
   saveToInbox(
     userId: string,
     title: string,
@@ -31,6 +39,7 @@ interface InboxWriter {
 
 // implement email notification channel
 class EmailNotificationChannel implements EmailSender {
+  /** Sends email through the configured email provider. */
   async sendEmail(
     emailAddress: string,
     subject: string,
@@ -44,6 +53,7 @@ class EmailNotificationChannel implements EmailSender {
 
 // implement in app inbox channel
 class InAppInboxChannel implements InboxWriter {
+  /** Writes an in-app inbox message for a specific user. */
   async saveToInbox(
     userId: string,
     title: string,
@@ -56,6 +66,7 @@ class InAppInboxChannel implements InboxWriter {
 
 // implement mobile notification channel
 class MobileNotificationChannel implements PushSender, InboxWriter {
+  /** Sends a push notification to a mobile device. */
   async sendPushNotification(
     deviceToken: string,
     title: string,
@@ -65,6 +76,7 @@ class MobileNotificationChannel implements PushSender, InboxWriter {
     console.log(`${title}: ${body}`);
   }
 
+  /** Stores a copy of the notification in the app inbox. */
   async saveToInbox(
     userId: string,
     title: string,
@@ -76,6 +88,7 @@ class MobileNotificationChannel implements PushSender, InboxWriter {
 }
 
 // usage example
+/** Sends a password reset email using any email-capable sender. */
 async function sendPasswordResetEmail(
   sender: EmailSender,
   emailAddress: string,
@@ -88,6 +101,7 @@ async function sendPasswordResetEmail(
   );
 }
 
+/** Sends a push notification to a mobile device. */
 async function notifyMobileUser(
   sender: PushSender,
   deviceToken: string,
@@ -97,6 +111,7 @@ async function notifyMobileUser(
   await sender.sendPushNotification(deviceToken, title, body);
 }
 
+/** Adds an in-app inbox notification for a user. */
 async function addInboxNotification(
   writer: InboxWriter,
   userId: string,
