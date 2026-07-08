@@ -57,26 +57,6 @@ class SeniorDiscountPolicy implements DiscountPolicy {
   }
 }
 
-// Factory for creating discount policies based on user type
-class DiscountPolicyFactory {
-  /** Builds the appropriate policy implementation for a discount type. */
-  static create(discountType: DiscountType): DiscountPolicy {
-    if (discountType === "student") {
-      return new StudentDiscountPolicy();
-    }
-
-    if (discountType === "vip") {
-      return new VipDiscountPolicy();
-    }
-
-    if (discountType === "senior") {
-      return new SeniorDiscountPolicy();
-    }
-
-    return new NoDiscountPolicy();
-  }
-}
-
 /** Service that computes final totals using an injected discount policy. */
 class CheckoutService {
   /**
@@ -91,8 +71,8 @@ class CheckoutService {
   }
 }
 
-// Example usage
-const order: Order = {
+// Example usage with two explicit discount policies
+const vipOrder: Order = {
   subtotal: 100,
   customer: {
     name: "Maya",
@@ -100,6 +80,16 @@ const order: Order = {
   },
 };
 
-const policy = DiscountPolicyFactory.create(order.customer.discountType);
-const checkout = new CheckoutService(policy);
-console.log(checkout.calculateTotal(order)); // 80
+const studentOrder: Order = {
+  subtotal: 100,
+  customer: {
+    name: "Leo",
+    discountType: "student",
+  },
+};
+
+const vipCheckout = new CheckoutService(new VipDiscountPolicy());
+const studentCheckout = new CheckoutService(new StudentDiscountPolicy());
+
+console.log(vipCheckout.calculateTotal(vipOrder)); // 80
+console.log(studentCheckout.calculateTotal(studentOrder)); // 90
